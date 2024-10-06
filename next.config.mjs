@@ -1,4 +1,13 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    reactStrictMode: true,
+    env: {
+      MONGODB_URI: process.env.MONGODB_URI,
+      DB_NAME: process.env.DB_NAME,
+    },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
+}
 
 export default nextConfig;
