@@ -20,12 +20,13 @@ export type Stage = {
   _id: string;
   name: string;
   complete: boolean;
+  order: number;
 }
 
 export type StageType = Stage
 
 export type Conversation = {
-  _id: string;
+  id: number;
   date: string;
   sender: string;
   recipient: string;
