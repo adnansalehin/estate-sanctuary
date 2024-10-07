@@ -4,6 +4,7 @@ import Activity from '@/models/Activity'
 import Stage from '@/models/Stage'
 import { ThemeWrapper } from '@/components/ThemeWrapper'
 import { PropertyDetailsType, ActivityType, StageType } from '@/app/types'
+import { MONGODB_URI, DB_NAME } from '@/db/env.config';
 
 async function getPropertyDetails(): Promise<PropertyDetailsType | null> {
   try {
@@ -52,6 +53,7 @@ export default async function OverviewPage() {
     const stages = await getStages();
 
     if (!propertyDetails) {
+      console.log('Connecting to MongoDB...', MONGODB_URI, DB_NAME);
       return <div>No property details found or unable to connect to the database</div>;
     }
 
