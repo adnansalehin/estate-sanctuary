@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp, User, Home, Briefcase } from 'lucide-react'
 import { initialConversations } from "@/utils/constants"
-import { Conversation } from "@/types"
+import { Conversation } from "@/app/types"
 
 type ThreadListProps = {
   currentStage: number;

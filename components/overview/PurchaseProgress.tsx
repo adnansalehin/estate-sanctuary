@@ -1,14 +1,25 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Progress } from "@/components/ui/progress"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { stages } from "@/utils/constants"
+import { StageType } from '@/app/types'
 
 type PurchaseProgressProps = {
-  currentStage: number;
+  stages: StageType[];
+  currentStage: number | null;
   onStageClick: (index: number) => void;
   isDarkTheme: boolean;
 }
 
-export function PurchaseProgress({ currentStage, onStageClick, isDarkTheme }: PurchaseProgressProps) {
+export function PurchaseProgress({ stages, currentStage=1, onStageClick, isDarkTheme }: PurchaseProgressProps) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // Calculate progress based on currentStage
+    setProgress(((currentStage + 1) / stages.length) * 100);
+  }, [currentStage, stages.length]);
+
   return (
     <Card className={isDarkTheme ? "bg-[#013639] text-white" : "bg-white text-[#024e52]"}>
       <CardHeader>
@@ -16,8 +27,8 @@ export function PurchaseProgress({ currentStage, onStageClick, isDarkTheme }: Pu
       </CardHeader>
       <CardContent>
         <Progress 
-          value={(currentStage + 1) / stages.length * 100} 
-          className="h-2 mb-2 isDarkTheme ? bg-[#024e52]" 
+          value={progress} 
+          className={`h-2 mb-4 ${isDarkTheme ? 'bg-[#024e52]' : 'bg-gray-200'}`}
         />
         <div className="flex justify-between text-sm">
           {stages.map((stage, index) => (

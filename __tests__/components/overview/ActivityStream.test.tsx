@@ -14,7 +14,7 @@ jest.mock("@/components/overview/ThreadList", () => ({
 
 describe('ActivityStream', () => {
   it('renders the component with activities', () => {
-    render(<ActivityStream currentStage={1} isDarkTheme={false} />);
+    render(<ActivityStream currentStage={1} isDarkTheme={false} initialActivities={[]} />);
 
     expect(screen.getByText('Activity Stream')).toBeInTheDocument();
     expect(screen.getByText('All')).toBeInTheDocument();

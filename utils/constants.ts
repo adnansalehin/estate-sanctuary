@@ -1,4 +1,4 @@
-import { Activity, Document, Stage, Conversation } from '@/types'
+import { Activity, Document, Stage, Conversation } from '@/app/types'
 
 export const propertyDetails = {
   address: "123 Main St, Anytown, AN 12345",
@@ -6,11 +6,11 @@ export const propertyDetails = {
 }
 
 export const stages: Stage[] = [
-  { name: "Offer", complete: true },
-  { name: "Enquiries", complete: true },
-  { name: "Survey", complete: false },
-  { name: "Exchange", complete: false },
-  { name: "Completion", complete: false }
+  { _id: "1", name: "Offer", complete: true },
+  { _id: "2", name: "Enquiries", complete: true },
+  { _id: "3", name: "Survey", complete: false },
+  { _id: "4", name: "Exchange", complete: false },
+  { _id: "5", name: "Completion", complete: false }
 ]
 
 export const activities: Activity[] = [

@@ -15,9 +15,12 @@ export type Document = {
 }
 
 export type Stage = {
+  _id: string;
   name: string;
   complete: boolean;
 }
+
+export type StageType = Stage
 
 export type Conversation = {
   id: number;

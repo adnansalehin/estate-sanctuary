@@ -19,7 +19,7 @@
 # misc
 .DS_Store
 *.pem
-/db 
+/db/mongo.mongodb.js
 
 # debug
 npm-debug.log*
