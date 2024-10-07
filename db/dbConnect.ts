@@ -10,6 +10,7 @@ if (!DB_NAME) {
 }
 
 async function dbConnect() {
+  console.log('Connecting to MongoDB...', MONGODB_URI, DB_NAME);
   if (mongoose.connection.readyState >= 1) {
     return;
   }

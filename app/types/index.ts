@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 export type Activity = {
+  _id: string;
   date: string;
   event: string;
   type: 'document' | 'enquiry';
@@ -8,6 +9,7 @@ export type Activity = {
 }
 
 export type Document = {
+  _id: string;
   name: string;
   uploader: string;
   stage: number;
@@ -23,7 +25,7 @@ export type Stage = {
 export type StageType = Stage
 
 export type Conversation = {
-  id: number;
+  _id: string;
   date: string;
   sender: string;
   recipient: string;
@@ -31,3 +33,15 @@ export type Conversation = {
   stage: number;
   attachment?: string;
 }
+
+export type PropertyDetails = {
+  _id: string;
+  address: string;
+  price: string;
+}
+
+export type ActivityType = Activity
+
+export type DocumentType = Document
+
+export type PropertyDetailsType = PropertyDetails
