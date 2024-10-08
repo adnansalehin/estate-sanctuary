@@ -1,5 +1,17 @@
 import { ReactNode } from 'react'
 
+
+export type ActivityListProps = {
+  activities: Activity[];
+  isDarkTheme: boolean;
+}
+
+export type ActivityStreamProps = {
+  initialActivities: Activity[];
+  currentStage: number;
+  isDarkTheme: boolean;
+}
+
 export type Activity = {
   _id: string;
   date: string;

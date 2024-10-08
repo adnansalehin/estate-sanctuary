@@ -1,13 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { documents } from "@/utils/constants"
-
+import { DocumentType } from "@/app/types"
 type ProfileProps = {
   currentStage: number;
   isDarkTheme: boolean;
+  documents: DocumentType[];
 }
 
-export function Profile({ currentStage, isDarkTheme }: ProfileProps) {
+export function Profile({ currentStage, isDarkTheme, documents }: ProfileProps) {
   const filteredDocuments = documents.filter(doc => doc.stage <= currentStage + 1 && doc.uploader === "Buyer")
 
   return (

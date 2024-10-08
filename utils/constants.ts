@@ -1,3 +1,4 @@
+/*
 import { Activity, Document, Stage, Conversation } from '@/app/types'
 
 export const propertyDetails = {
@@ -33,3 +34,4 @@ export const initialConversations: Conversation[] = [
   { id: 3, date: "2023-09-26", sender: "Buyer's Solicitor", recipient: "Seller's Solicitor", message: "We have some questions about the property boundaries.", stage: 2 },
   { id: 4, date: "2023-09-25", sender: "Seller's Solicitor", recipient: "Buyer's Solicitor", message: "Here are the details about the property boundaries...", stage: 2 },
 ]
+*/

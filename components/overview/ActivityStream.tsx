@@ -6,22 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, Users, Calendar } from 'lucide-react'
 import { DocumentUpload } from "@/components/overview/DocumentUpload"
 import { ThreadList } from "@/components/overview/ThreadList"
-// Remove the following line as it's not being used
-// import { useTheme } from '@/hooks/useTheme'
+import { Activity, ActivityStreamProps, ActivityListProps } from '@/app/types'
 
-type Activity = {
-  _id: string;
-  date: string;
-  event: string;
-  type: string;
-  stage: number;
-}
-
-type ActivityStreamProps = {
-  initialActivities: Activity[];
-  currentStage: number;
-  isDarkTheme: boolean;
-}
 
 export function ActivityStream({ initialActivities, currentStage, isDarkTheme }: ActivityStreamProps) {
   const [activities] = useState<Activity[]>(initialActivities);
@@ -66,11 +52,6 @@ export function ActivityStream({ initialActivities, currentStage, isDarkTheme }:
       </CardContent>
     </Card>
   )
-}
-
-type ActivityListProps = {
-  activities: Activity[];
-  isDarkTheme: boolean;
 }
 
 function ActivityList({ activities, isDarkTheme }: ActivityListProps) {

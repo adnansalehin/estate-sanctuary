@@ -2,10 +2,25 @@ import dbConnect from '@/db/dbConnect'
 import PropertyDetails from '@/models/PropertyDetails'
 import Activity from '@/models/Activity'
 import Stage from '@/models/Stage'
+import Document from '@/models/Document'
 import { ThemeWrapper } from '@/components/ThemeWrapper'
-import { PropertyDetailsType, ActivityType, StageType } from '@/app/types'
+import { PropertyDetailsType, ActivityType, StageType, DocumentType } from '@/app/types'
 import { MONGODB_URI, DB_NAME } from '@/db/env.config';
 
+
+async function getDocuments(): Promise<DocumentType[]> {
+  try {
+    await dbConnect();
+    const documents = await Document.find().sort({ stage: 1 }).lean<DocumentType[]>();
+    return documents.map((doc) => ({
+      ...doc,
+      _id: doc._id.toString(),
+    }));
+  } catch (error) {
+    console.error('Error fetching documents:', error);
+    return [];
+  }
+}
 async function getPropertyDetails(): Promise<PropertyDetailsType | null> {
   try {
     await dbConnect();
@@ -51,6 +66,7 @@ export default async function OverviewPage() {
     const propertyDetails = await getPropertyDetails();
     const activities = await getActivities();
     const stages = await getStages();
+    const documents = await getDocuments();
 
     if (!propertyDetails) {
       console.log('Connecting to MongoDB...', MONGODB_URI, DB_NAME);
@@ -62,6 +78,7 @@ export default async function OverviewPage() {
         propertyDetails={propertyDetails}
         initialActivities={activities}
         stages={stages}
+        documents={documents}
       />
     )
   } catch (error) {
