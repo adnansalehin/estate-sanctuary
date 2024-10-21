@@ -6,18 +6,19 @@ import { ActivityStream } from '@/components/overview/ActivityStream'
 import { Profile } from '@/components/overview/Profile'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { useTheme } from '@/contexts/ThemeContext'
-import { PropertyDetailsType, ActivityType, StageType, DocumentType } from '@/app/types'
+import { PropertyDetailsType, ActivityType, StageType, DocumentType, ConversationType } from '@/app/types'
 
 type OverviewClientProps = {
-  stages: StageType[];
   propertyDetails: PropertyDetailsType;
+  stages: StageType[];
   initialActivities: ActivityType[];
   documents: DocumentType[];
+  initialConversations: ConversationType[];
 }
 
-export function OverviewClient({ stages, propertyDetails, initialActivities, documents }: OverviewClientProps) {
+export function OverviewClient({ propertyDetails, stages, initialActivities, documents, initialConversations }: OverviewClientProps) {
   const { isDarkTheme } = useTheme();
-  const [currentStage, setCurrentStage] = useState(2);
+  const [currentStage, setCurrentStage] = useState(1);
 
   const handleStageClick = (stage: number) => {
     setCurrentStage(stage)
@@ -44,9 +45,10 @@ export function OverviewClient({ stages, propertyDetails, initialActivities, doc
           initialActivities={initialActivities}
           currentStage={currentStage}
           isDarkTheme={isDarkTheme}
+          initialConversations={initialConversations}
         />
         <Profile 
-          currentStage={currentStage} 
+          currentStage={currentStage}
           isDarkTheme={isDarkTheme} 
           documents={documents}
         />

@@ -4,31 +4,31 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp, User, Home, Briefcase } from 'lucide-react'
-import { initialConversations } from "@/utils/constants"
-import { Conversation } from "@/app/types"
+import { ConversationType } from "@/app/types"
 
 type ThreadListProps = {
   currentStage: number;
   isDarkTheme: boolean;
+  initialConversations: ConversationType[];
 }
 
-export function ThreadList({ currentStage, isDarkTheme }: ThreadListProps) {
-  const [conversations, setConversations] = useState<Conversation[]>(initialConversations)
-  const [expandedConversation, setExpandedConversation] = useState<number | null>(null)
+export function ThreadList({ currentStage, isDarkTheme, initialConversations }: ThreadListProps) {
+  const [conversations, setConversations] = useState<ConversationType[]>(initialConversations || [])
+  const [expandedConversation, setExpandedConversation] = useState<string | null>(null)
   const [newThreadMessage, setNewThreadMessage] = useState("")
   const [newThreadRecipient, setNewThreadRecipient] = useState("")
   const [newThreadAttachment, setNewThreadAttachment] = useState<File | null>(null)
 
   const filteredConversations = conversations.filter(conv => conv.stage <= currentStage + 1)
 
-  const toggleConversation = (id: number) => {
+  const toggleConversation = (id: string) => {
     setExpandedConversation(expandedConversation === id ? null : id)
   }
 
   const handleNewThreadSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const newThread: Conversation = {
-      id: conversations.length + 1,
+    const newThread: ConversationType = {
+      _id: new Date().toISOString().split('T')[0], // Use a temporary ID
       date: new Date().toISOString().split('T')[0],
       sender: "Buyer",
       recipient: newThreadRecipient,
@@ -40,6 +40,7 @@ export function ThreadList({ currentStage, isDarkTheme }: ThreadListProps) {
     setNewThreadMessage("")
     setNewThreadRecipient("")
     setNewThreadAttachment(null)
+    // TODO: Implement API call to save the new conversation to the database
   }
 
   return (
@@ -83,9 +84,9 @@ export function ThreadList({ currentStage, isDarkTheme }: ThreadListProps) {
       </form>
       <ul className="space-y-4">
         {filteredConversations.map((conversation) => (
-          <li key={conversation.id} className={`border ${isDarkTheme ? 'border-gray-600' : 'border-gray-200'} rounded-lg overflow-hidden`}>
+          <li key={conversation._id} className={`border ${isDarkTheme ? 'border-gray-600' : 'border-gray-200'} rounded-lg overflow-hidden`}>
             <button
-              onClick={() => toggleConversation(conversation.id)}
+              onClick={() => toggleConversation(conversation._id)}
               className="flex items-center justify-between w-full p-4 text-left"
             >
               <div className="flex items-center gap-4">
@@ -95,12 +96,12 @@ export function ThreadList({ currentStage, isDarkTheme }: ThreadListProps) {
                 {conversation.sender === "Surveyor" && <Briefcase className="w-6 h-6 text-purple-400" />}
                 <div>
                   <p className="font-medium">{conversation.sender} to {conversation.recipient}</p>
-                  <p className={`text-sm ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>{conversation.date}</p>
+                  <p className={`text-sm ${isDarkTheme ? 'text-gray-300' : 'text-gray-600'}`}>{`${conversation.date}`}</p>
                 </div>
               </div>
-              {expandedConversation === conversation.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {expandedConversation === conversation._id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
-            {expandedConversation === conversation.id && (
+            {expandedConversation === conversation._id && (
               <div className={`p-4 ${isDarkTheme ? 'bg-[#024e52]' : 'bg-gray-100'}`}>
                 <p>{conversation.message}</p>
                 {conversation.attachment && (

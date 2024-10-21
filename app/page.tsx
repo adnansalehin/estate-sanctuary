@@ -3,9 +3,9 @@ import PropertyDetails from '@/models/PropertyDetails'
 import Activity from '@/models/Activity'
 import Stage from '@/models/Stage'
 import Document from '@/models/Document'
-import { ThemeWrapper } from '@/components/ThemeWrapper'
-import { PropertyDetailsType, ActivityType, StageType, DocumentType } from '@/app/types'
-import { MONGODB_URI, DB_NAME } from '@/db/env.config';
+import Conversation from '@/models/Conversation'
+import { PropertyDetailsType, ActivityType, StageType, DocumentType, ConversationType } from '@/app/types'
+import { OverviewPageWrapper } from '@/components/OverviewPageWrapper'
 
 
 async function getDocuments(): Promise<DocumentType[]> {
@@ -21,6 +21,7 @@ async function getDocuments(): Promise<DocumentType[]> {
     return [];
   }
 }
+
 async function getPropertyDetails(): Promise<PropertyDetailsType | null> {
   try {
     await dbConnect();
@@ -61,24 +62,43 @@ async function getStages(): Promise<StageType[]> {
   }
 }
 
+async function getConversations(): Promise<ConversationType[]> {
+  try {
+    await dbConnect();
+    const conversations = await Conversation.find().sort({ date: -1 }).lean();
+    return conversations.map((conv): ConversationType => ({
+      _id: conv._id.toString(),
+      sender: conv.sender,
+      recipient: conv.recipient,
+      message: conv.message,
+      stage: conv.stage,
+      date: conv.date,
+    }));
+  } catch (error) {
+    console.error('Error fetching conversations:', error);
+    return [];
+  }
+}
+
 export default async function OverviewPage() {
   try {
     const propertyDetails = await getPropertyDetails();
     const activities = await getActivities();
     const stages = await getStages();
     const documents = await getDocuments();
+    const conversations = await getConversations();
 
     if (!propertyDetails) {
-      console.log('Connecting to MongoDB...', MONGODB_URI, DB_NAME);
       return <div>No property details found or unable to connect to the database</div>;
     }
 
     return (
-      <ThemeWrapper
-        propertyDetails={propertyDetails}
-        initialActivities={activities}
+      <OverviewPageWrapper
+        properties={[propertyDetails]} // Wrap in array as PropertyGrid expects an array
+        activities={activities}
         stages={stages}
         documents={documents}
+        conversations={conversations}
       />
     )
   } catch (error) {

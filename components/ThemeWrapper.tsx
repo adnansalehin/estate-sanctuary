@@ -2,16 +2,17 @@
 
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { OverviewClient } from '@/components/OverviewClient'
-import { PropertyDetailsType, ActivityType, StageType, DocumentType } from '@/app/types'
+import { PropertyDetailsType, ActivityType, StageType, DocumentType, ConversationType } from '@/app/types'
 
 type ThemeWrapperProps = {
   propertyDetails: PropertyDetailsType;
   initialActivities: ActivityType[];
   stages: StageType[];
   documents: DocumentType[];
+  initialConversations: ConversationType[];
 }
 
-export function ThemeWrapper({ propertyDetails, initialActivities, stages, documents }: ThemeWrapperProps) {
+export function ThemeWrapper({ propertyDetails, initialActivities, stages, documents, initialConversations }: ThemeWrapperProps) {
   return (
     <ThemeProvider>
       <OverviewClient
@@ -19,6 +20,7 @@ export function ThemeWrapper({ propertyDetails, initialActivities, stages, docum
         initialActivities={initialActivities}
         stages={stages}
         documents={documents}
+        initialConversations={initialConversations}
       />
     </ThemeProvider>
   )

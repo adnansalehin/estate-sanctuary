@@ -9,7 +9,7 @@ import { ThreadList } from "@/components/overview/ThreadList"
 import { Activity, ActivityStreamProps, ActivityListProps } from '@/app/types'
 
 
-export function ActivityStream({ initialActivities, currentStage, isDarkTheme }: ActivityStreamProps) {
+export function ActivityStream({ initialActivities, currentStage, isDarkTheme, initialConversations }: ActivityStreamProps) {
   const [activities] = useState<Activity[]>(initialActivities);
 
   const filteredActivities = activities.filter(activity => activity.stage <= currentStage + 1)
@@ -20,8 +20,8 @@ export function ActivityStream({ initialActivities, currentStage, isDarkTheme }:
         <CardTitle>Activity Stream</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="all" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="all" className="w-full" >
+          <TabsList className={`grid w-full grid-cols-4 ${isDarkTheme ? "bg-[#273b3c] text-white" : "bg-gray-100 text-[#024e52]"}`}>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
             <TabsTrigger value="enquiries">Enquiries</TabsTrigger>
@@ -46,7 +46,7 @@ export function ActivityStream({ initialActivities, currentStage, isDarkTheme }:
             />
           </TabsContent>
           <TabsContent value="thread" className="mt-4">
-            <ThreadList currentStage={currentStage} isDarkTheme={isDarkTheme} />
+            <ThreadList currentStage={currentStage} isDarkTheme={isDarkTheme} initialConversations={initialConversations} />
           </TabsContent>
         </Tabs>
       </CardContent>

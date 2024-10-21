@@ -10,6 +10,7 @@ export type ActivityStreamProps = {
   initialActivities: Activity[];
   currentStage: number;
   isDarkTheme: boolean;
+  initialConversations: ConversationType[];
 }
 
 export type Activity = {
@@ -37,8 +38,8 @@ export type Stage = {
 
 export type StageType = Stage
 
-export type Conversation = {
-  id: number;
+export type ConversationType = {
+  _id: string;
   date: string;
   sender: string;
   recipient: string;
@@ -52,6 +53,7 @@ export type PropertyDetails = {
   address: string;
   price: string;
 }
+
 
 export type ActivityType = Activity
 
