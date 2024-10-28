@@ -1,16 +1,18 @@
 'use client'
 
-import { useState } from 'react'
-import { PropertyGrid } from '@/components/PropertyGrid'
+import { useState, useEffect } from 'react'
+import { Sidebar } from '@/components/Sidebar'
 import { ThemeWrapper } from '@/components/ThemeWrapper'
+import { useTheme } from '@/contexts/ThemeContext'
 import { PropertyDetailsType, ActivityType, StageType, DocumentType, ConversationType } from '@/app/types'
+import { fetchLiveData } from '@/app/actions'
 
 type OverviewPageWrapperProps = { 
-  properties: PropertyDetailsType[], 
-  activities: ActivityType[], 
-  stages: StageType[], 
-  documents: DocumentType[], 
-  conversations: ConversationType[] 
+  properties: PropertyDetailsType[]
+  activities: ActivityType[]
+  stages: StageType[]
+  documents: DocumentType[]
+  conversations: ConversationType[]
 }
 
 export function OverviewPageWrapper({ 
@@ -20,32 +22,71 @@ export function OverviewPageWrapper({
   documents, 
   conversations 
 }: OverviewPageWrapperProps) {
-  const [selectedProperty, setSelectedProperty] = useState<PropertyDetailsType | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<PropertyDetailsType | null>(properties[0] || null)
+  const [data, setData] = useState({
+    properties,
+    activities,
+    stages,
+    documents,
+    conversations
+  })
+  const { isDarkTheme, isCollapsed } = useTheme()
 
-  const handleRowClick = (property: PropertyDetailsType) => {
-    setSelectedProperty(property);
-  };
+  useEffect(() => {
+    // Fetch live data and update state
+    const updateLiveData = async () => {
+      const liveData = await fetchLiveData()
+      if (liveData) {
+        setData(liveData)
+        // Update selected property if it exists in new data
+        if (selectedProperty) {
+          const updatedProperty = liveData.properties.find(p => p._id === selectedProperty._id)
+          if (updatedProperty) {
+            setSelectedProperty(updatedProperty)
+          }
+        }
+      }
+    }
+
+    updateLiveData()
+  }, [selectedProperty])
+
+  const handlePropertySelect = (property: PropertyDetailsType) => {
+    setSelectedProperty(property)
+  }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Property Overview</h1>
-      <PropertyGrid properties={properties} onRowClick={handleRowClick} />
-      {selectedProperty ? (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Selected Property Details</h2>
-          <ThemeWrapper
-            propertyDetails={selectedProperty}
-            initialActivities={activities}
-            stages={stages}
-            documents={documents}
-            initialConversations={conversations}
-          />
-        </div>
-      ) : (
-        <div className="mt-8 text-center text-gray-500">
-          Select a property from the grid above to view details.
-        </div>
-      )}
+    <div className="flex pt-14">
+      <Sidebar
+        properties={data.properties}
+        selectedProperty={selectedProperty}
+        onPropertySelect={handlePropertySelect}
+        isDarkTheme={isDarkTheme}
+      />
+      
+      <main 
+        className={`flex-1 min-h-screen transition-all duration-300 ${isDarkTheme ? 'bg-[#024e52]' : 'bg-gray-50'}`} 
+        style={{ marginLeft: isCollapsed ? '4rem' : '16rem' }}
+      >
+        {selectedProperty ? (
+          <div className="p-6">
+            <ThemeWrapper
+              propertyDetails={selectedProperty}
+              initialActivities={data.activities}
+              stages={data.stages}
+              documents={data.documents}
+              initialConversations={data.conversations}
+            />
+          </div>
+        ) : (
+          <div className="h-screen flex items-center justify-center text-center p-6">
+            <div className={`${isDarkTheme ? 'text-white' : 'text-gray-500'}`}>
+              <h2 className="text-xl font-semibold mb-2">No Property Selected</h2>
+              <p>Please select a property from the sidebar to view its details.</p>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
-  );
+  )
 }
