@@ -7,7 +7,6 @@ import Activity from '@/models/Activity'
 import Stage from '@/models/Stage'
 import Document from '@/models/Document'
 import Conversation from '@/models/Conversation'
-import { PropertyDetailsType, ActivityType, StageType, DocumentType, ConversationType } from '@/app/types'
 
 export async function fetchLiveData() {
   try {
@@ -29,7 +28,7 @@ export async function fetchLiveData() {
       })),
       propertyDetails: propertyDetails ? {
         ...propertyDetails,
-        _id: propertyDetails._id.toString()
+        // _id: propertyDetails._id.toString()
       } : null,
       activities: activities.map((activity: any) => ({
         ...activity,

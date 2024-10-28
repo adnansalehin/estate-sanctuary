@@ -1,21 +1,18 @@
 import { Suspense } from 'react'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { OverviewPageWrapper } from '@/components/OverviewPageWrapper'
 import { properties as dummyProperties, activities as dummyActivities, stages as dummyStages, documents as dummyDocuments, conversations as dummyConversations } from '@/utils/constants'
 import { fetchLiveData } from '@/app/actions'
 
-export default async function DemoPage() {
+function LoadingFallback() {
   return (
-    <Suspense fallback={
-      <OverviewPageWrapper
-        properties={dummyProperties}
-        activities={dummyActivities}
-        stages={dummyStages}
-        documents={dummyDocuments}
-        conversations={dummyConversations}
-      />
-    }>
-      <DemoContent />
-    </Suspense>
+    <OverviewPageWrapper
+      properties={dummyProperties}
+      activities={dummyActivities}
+      stages={dummyStages}
+      documents={dummyDocuments}
+      conversations={dummyConversations}
+    />
   )
 }
 
@@ -30,5 +27,15 @@ async function DemoContent() {
       documents={liveData?.documents || dummyDocuments}
       conversations={liveData?.conversations || dummyConversations}
     />
+  )
+}
+
+export default function DemoPage() {
+  return (
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <DemoContent />
+      </Suspense>
+    </ErrorBoundary>
   )
 }
