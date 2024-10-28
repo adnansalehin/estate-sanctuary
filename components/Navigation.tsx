@@ -6,6 +6,12 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { cn } from '@/lib/utils'
 
+// Define navigation items with unique IDs
+const navItems = [
+  { id: 'home', path: '/', label: 'Home' },
+  { id: 'demo', path: '/demo', label: 'Demo' }
+]
+
 export function Navigation() {
   const pathname = usePathname()
   const { isDarkTheme } = useTheme()
@@ -23,28 +29,20 @@ export function Navigation() {
             Estate Sanctuary
           </Link>
           <div className="flex items-center space-x-4">
-            <Link 
-              href="/" 
-              className={cn(
-                'px-3 py-2 rounded-md text-sm font-medium',
-                pathname === '/' ? (
-                  isDarkTheme ? 'bg-[#024e52] text-white' : 'bg-gray-100 text-[#024e52]'
-                ) : 'hover:opacity-80'
-              )}
-            >
-              Home
-            </Link>
-            <Link 
-              href="/demo" 
-              className={cn(
-                'px-3 py-2 rounded-md text-sm font-medium',
-                pathname === '/demo' ? (
-                  isDarkTheme ? 'bg-[#024e52] text-white' : 'bg-gray-100 text-[#024e52]'
-                ) : 'hover:opacity-80'
-              )}
-            >
-              Demo
-            </Link>
+            {navItems.map(item => (
+              <Link 
+                key={item.id}
+                href={item.path} 
+                className={cn(
+                  'px-3 py-2 rounded-md text-sm font-medium',
+                  pathname === item.path ? (
+                    isDarkTheme ? 'bg-[#024e52] text-white' : 'bg-gray-100 text-[#024e52]'
+                  ) : 'hover:opacity-80'
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
         <ThemeToggle />

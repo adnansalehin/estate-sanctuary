@@ -57,8 +57,8 @@ export function ActivityStream({ initialActivities, currentStage, isDarkTheme, i
 function ActivityList({ activities, isDarkTheme }: ActivityListProps) {
   return (
     <ul className="space-y-4">
-      {activities.map((activity) => (
-        <li key={activity._id} className={`flex items-start gap-4 p-4 border ${isDarkTheme ? 'border-gray-600' : 'border-gray-200'} rounded-lg`}>
+      {activities.map((activity, index) => (
+        <li key={activity._id?.toString() || `activity-${index}`} className={`flex items-start gap-4 p-4 border ${isDarkTheme ? 'border-gray-600' : 'border-gray-200'} rounded-lg`}>
           {activity.type === 'document' && <FileText className="w-6 h-6 text-white" />}
           {activity.type === 'enquiry' && <Users className="w-6 h-6 text-white" />}
           <div className="flex-1">

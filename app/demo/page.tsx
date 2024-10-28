@@ -1,41 +1,33 @@
 import { Suspense } from 'react'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { OverviewPageWrapper } from '@/components/OverviewPageWrapper'
-import { properties as dummyProperties, activities as dummyActivities, stages as dummyStages, documents as dummyDocuments, conversations as dummyConversations } from '@/utils/constants'
 import { fetchLiveData } from '@/app/actions'
+import { DemoContent, LoadingFallback } from '@/app/demo/components'
 
-function LoadingFallback() {
-  return (
-    <OverviewPageWrapper
-      properties={dummyProperties}
-      activities={dummyActivities}
-      stages={dummyStages}
-      documents={dummyDocuments}
-      conversations={dummyConversations}
-    />
-  )
-}
-
-async function DemoContent() {
+// Server component that handles data fetching
+async function DemoPage() {
+  // Fetch data on the server
   const liveData = await fetchLiveData()
+  
+  // Transform dates if live data is available
+  const transformedData = liveData ? {
+    ...liveData,
+    activities: liveData.activities.map(activity => ({
+      ...activity,
+      date: new Date(activity.date).toISOString()
+    })),
+    conversations: liveData.conversations.map(conversation => ({
+      ...conversation,
+      date: new Date(conversation.date).toISOString()
+    }))
+  } : null
 
-  return (
-    <OverviewPageWrapper
-      properties={liveData?.properties || dummyProperties}
-      activities={liveData?.activities || dummyActivities}
-      stages={liveData?.stages || dummyStages}
-      documents={liveData?.documents || dummyDocuments}
-      conversations={liveData?.conversations || dummyConversations}
-    />
-  )
-}
-
-export default function DemoPage() {
   return (
     <ErrorBoundary>
       <Suspense fallback={<LoadingFallback />}>
-        <DemoContent />
+        <DemoContent data={transformedData} />
       </Suspense>
     </ErrorBoundary>
   )
 }
+
+export default DemoPage

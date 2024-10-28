@@ -45,9 +45,9 @@ export function Sidebar({ properties, selectedProperty, onPropertySelect, isDark
           {isCollapsed ? "Props" : "Properties"}
         </h2>
         <div className="space-y-2">
-          {properties.map((property) => (
+          {properties.map((property, index) => (
             <button
-              key={property._id}
+              key={property._id?.toString() || `property-${index}`}
               onClick={() => onPropertySelect(property)}
               className={cn(
                 'w-full p-2 rounded-lg transition-colors text-left',

@@ -61,7 +61,7 @@ export function LandingPage() {
           <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
               <div 
-                key={feature.title} 
+                key={feature.id}
                 className={cn(
                   'rounded-xl p-8',
                   isDarkTheme ? 'bg-[#013639]' : 'bg-white'
@@ -83,16 +83,19 @@ export function LandingPage() {
 
 const features = [
   {
+    id: 1,
     title: 'Real-time Progress Tracking',
     description: 'Monitor your property purchase progress in real-time with our intuitive dashboard.',
     icon: '📊'
   },
   {
+    id: 2,
     title: 'Document Management',
     description: 'Keep all your property-related documents organized and easily accessible.',
     icon: '📄'
   },
   {
+    id: 3,
     title: 'Communication Hub',
     description: 'Streamline communication between all parties involved in the purchase process.',
     icon: '💬'

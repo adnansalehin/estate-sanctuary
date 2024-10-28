@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Sidebar } from '@/components/Sidebar'
 import { ThemeWrapper } from '@/components/ThemeWrapper'
 import { useTheme } from '@/contexts/ThemeContext'
 import { PropertyDetailsType, ActivityType, StageType, DocumentType, ConversationType } from '@/app/types'
-import { fetchLiveData } from '@/app/actions'
 
 type OverviewPageWrapperProps = { 
   properties: PropertyDetailsType[]
@@ -23,33 +22,7 @@ export function OverviewPageWrapper({
   conversations 
 }: OverviewPageWrapperProps) {
   const [selectedProperty, setSelectedProperty] = useState<PropertyDetailsType | null>(properties[0] || null)
-  const [data, setData] = useState({
-    properties,
-    activities,
-    stages,
-    documents,
-    conversations
-  })
   const { isDarkTheme, isCollapsed } = useTheme()
-
-  useEffect(() => {
-    // Fetch live data and update state
-    const updateLiveData = async () => {
-      const liveData = await fetchLiveData()
-      if (liveData) {
-        setData(liveData)
-        // Update selected property if it exists in new data
-        if (selectedProperty) {
-          const updatedProperty = liveData.properties.find(p => p._id === selectedProperty._id)
-          if (updatedProperty) {
-            setSelectedProperty(updatedProperty)
-          }
-        }
-      }
-    }
-
-    updateLiveData()
-  }, [selectedProperty])
 
   const handlePropertySelect = (property: PropertyDetailsType) => {
     setSelectedProperty(property)
@@ -58,7 +31,7 @@ export function OverviewPageWrapper({
   return (
     <div className="flex pt-14">
       <Sidebar
-        properties={data.properties}
+        properties={properties}
         selectedProperty={selectedProperty}
         onPropertySelect={handlePropertySelect}
         isDarkTheme={isDarkTheme}
@@ -72,10 +45,10 @@ export function OverviewPageWrapper({
           <div className="p-6">
             <ThemeWrapper
               propertyDetails={selectedProperty}
-              initialActivities={data.activities}
-              stages={data.stages}
-              documents={data.documents}
-              initialConversations={data.conversations}
+              initialActivities={activities}
+              stages={stages}
+              documents={documents}
+              initialConversations={conversations}
             />
           </div>
         ) : (
