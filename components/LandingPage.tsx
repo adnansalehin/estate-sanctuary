@@ -13,6 +13,9 @@ export function LandingPage() {
   const { isDarkTheme } = useTheme()
   const [email, setEmail] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Use a stable ID for the email input
+  const emailInputId = "email-subscription-input"
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,7 +55,9 @@ export function LandingPage() {
             <form onSubmit={handleSubmit} className="max-w-md mx-auto">
               <div className="flex gap-x-4">
                 <Input
+                  id={emailInputId}
                   type="email"
+                  name="email"
                   placeholder={content.emailForm.placeholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -63,6 +68,7 @@ export function LandingPage() {
                   )}
                   disabled={isSubmitting}
                   required
+                  aria-label="Email address"
                 />
                 <Button 
                   type="submit"
@@ -73,6 +79,7 @@ export function LandingPage() {
                     isSubmitting && 'opacity-50'
                   )}
                   disabled={isSubmitting}
+                  aria-label="Subscribe"
                 >
                   {isSubmitting ? content.emailForm.button.submitting : content.emailForm.button.default}
                 </Button>
