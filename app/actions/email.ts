@@ -26,41 +26,32 @@ const emailSchema = z.object({
 })
 
 export async function subscribeEmail(email: string) {
-  console.log('\n=== Starting Email Subscription Process ===')
-  console.log('Raw email input:', email)
+  console.log(`\n📝 Processing subscription for: ${email}`)
   
   try {
-    // Validate email with detailed error handling
-    console.log('Validating email format...')
+    // Validate email
     const validationResult = emailSchema.safeParse({ email })
     
     if (!validationResult.success) {
-      const errors = validationResult.error.errors
-      console.log('Format validation failed:', errors)
+      console.log('✗ Email validation failed:', validationResult.error.errors[0].message)
       return { 
         success: false, 
-        message: errors[0].message 
+        message: validationResult.error.errors[0].message 
       }
     }
     
     const validatedEmail = validationResult.data.email
-    console.log('Email format validated successfully:', validatedEmail)
+    console.log('✓ Email validated:', validatedEmail)
     
-    // Connect to database
-    console.log('Connecting to database...')
+    // Connect to database and check existing registrations
     await dbConnect()
-    console.log('Database connected successfully')
-    
-    // Check both collections in parallel for existing email
-    console.log('Checking for existing registrations...')
     const [existingVerified, existingPending] = await Promise.all([
       AgentEmail.findOne({ email: validatedEmail }),
       PendingEmailVerification.findOne({ email: validatedEmail })
     ])
 
-    // Handle existing registrations
     if (existingVerified) {
-      console.log('Email already verified:', validatedEmail)
+      console.log('! Email already verified:', validatedEmail)
       return { 
         success: false, 
         message: 'This email is already registered and verified' 
@@ -68,31 +59,21 @@ export async function subscribeEmail(email: string) {
     }
 
     if (existingPending) {
-      console.log('Email has pending verification:', validatedEmail)
-      const timeSinceCreation = Date.now() - existingPending.createdAt.getTime()
-      const minutesRemaining = Math.ceil((24 * 60 * 60 * 1000 - timeSinceCreation) / (60 * 1000))
-      
+      const minutesRemaining = Math.ceil(
+        (24 * 60 * 60 * 1000 - (Date.now() - existingPending.createdAt.getTime())) / (60 * 1000)
+      )
+      console.log('! Pending verification exists:', validatedEmail)
       return { 
         success: false, 
         message: `This email already has a pending verification. Please check your inbox or try again in ${minutesRemaining} minutes.` 
       }
     }
     
-    // Create new pending verification
-    console.log('Creating new pending verification')
-    const pendingVerification = new PendingEmailVerification({
-      email: validatedEmail
-    })
-    await pendingVerification.save()
+    // Create verification token and send email
+    const pendingVerification = await new PendingEmailVerification({ email: validatedEmail }).save()
+    console.log('✓ Verification token created')
     
-    console.log('Verification token:', pendingVerification.verificationToken)
-    
-    // Generate verification URL
     const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${pendingVerification.verificationToken}`
-    console.log('Verification URL:', verificationUrl)
-    
-    // Send verification email
-    console.log('Sending verification email...')
     const emailSent = await sendEmail(
       validatedEmail,
       'Verify your email address',
@@ -100,32 +81,18 @@ export async function subscribeEmail(email: string) {
     )
     
     if (!emailSent) {
-      console.error('Failed to send verification email')
-      // Clean up pending verification if email fails
+      console.log('✗ Failed to send verification email')
       await PendingEmailVerification.deleteOne({ _id: pendingVerification._id })
       throw new Error('Failed to send verification email')
     }
     
-    console.log('Verification email sent successfully')
-    console.log('=== Email Subscription Process Completed ===\n')
-    
+    console.log('✓ Verification email sent successfully')
     return { 
       success: true, 
       message: 'Please check your email to verify your subscription' 
     }
   } catch (error) {
-    console.error('\n=== Error in Email Subscription Process ===')
-    console.error('Error details:', error)
-    if (error instanceof z.ZodError) {
-      const errorMessage = error.errors.map(e => e.message).join(', ')
-      console.error('Validation error:', errorMessage)
-      return { success: false, message: errorMessage }
-    }
-    if (error instanceof Error) {
-      console.error('Error message:', error.message)
-      console.error('Stack trace:', error.stack)
-    }
-    console.error('=== Error Processing Completed ===\n')
+    console.error('✗ Subscription error:', error instanceof Error ? error.message : 'Unknown error')
     return { 
       success: false, 
       message: 'Failed to process subscription. Please try again.' 
@@ -134,60 +101,39 @@ export async function subscribeEmail(email: string) {
 }
 
 export async function verifyEmail(token: string) {
-  console.log('\n=== Starting Email Verification Process ===')
-  console.log('Token:', token)
+  console.log(`\n🔑 Processing verification for token: ${token.substring(0, 8)}...`)
   
   try {
     await dbConnect()
-    console.log('Database connected for verification')
-    
-    // Find pending verification
-    console.log('Searching for pending verification...')
-    const pendingVerification = await PendingEmailVerification.findOne({ 
-      verificationToken: token 
-    })
+    const pendingVerification = await PendingEmailVerification.findOne({ verificationToken: token })
     
     if (!pendingVerification) {
-      console.log('No pending verification found for token:', token)
+      console.log('✗ No pending verification found')
       return { 
         success: false, 
         message: 'Invalid or expired verification link' 
       }
     }
     
-    console.log('Found pending verification:', pendingVerification)
-    
     // Create verified email entry
-    console.log('Creating new verified email entry...')
-    const newEmail = new AgentEmail({
+    await new AgentEmail({
       email: pendingVerification.email,
       signupDate: new Date(),
       status: 'active'
-    })
+    }).save()
     
-    console.log('Saving verified email...')
-    await newEmail.save()
-    console.log('Email verified and saved:', pendingVerification.email)
+    console.log('✓ Email verified:', pendingVerification.email)
     
     // Delete pending verification
-    console.log('Deleting pending verification...')
-    const deleteResult = await PendingEmailVerification.deleteOne({ 
-      _id: pendingVerification._id 
-    })
-    console.log('Delete result:', deleteResult)
+    await PendingEmailVerification.deleteOne({ _id: pendingVerification._id })
+    console.log('✓ Pending verification cleaned up')
     
-    console.log('=== Email Verification Process Completed ===\n')
     return { 
       success: true, 
       message: 'Email successfully verified' 
     }
   } catch (error) {
-    console.error('\n=== Error in Email Verification Process ===')
-    console.error('Error details:', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      name: error instanceof Error ? error.name : 'Unknown error type',
-      stack: error instanceof Error ? error.stack : undefined
-    })
+    console.error('✗ Verification error:', error instanceof Error ? error.message : 'Unknown error')
     return { 
       success: false, 
       message: 'Failed to verify email. Please try again.' 

@@ -5,45 +5,30 @@ import { TransportOptions } from 'nodemailer'
 const transporter = nodemailer.createTransport({
   host: 'smtp.mail.me.com',
   port: 587,
-  secure: false, // Use STARTTLS
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER_AUTH, // Your full custom domain email
-    pass: process.env.EMAIL_APP_PASSWORD // App-specific password
+    user: process.env.EMAIL_USER_AUTH,
+    pass: process.env.EMAIL_APP_PASSWORD
   },
   tls: {
     rejectUnauthorized: true,
     minVersion: 'TLSv1.2'
-  },
-  debug: true,
-  logger: console,
-  // Add custom headers for better deliverability
-  headers: {
-    'X-PM-Message-Stream': 'outbound'
   }
 } as TransportOptions)
 
 export async function sendEmail(to: string, subject: string, html: string) {
-  console.log('\n=== Starting Email Send Process ===')
-  console.log('Email configuration:', {
-    from: process.env.EMAIL_USER,
-    to,
-    subject,
-    smtpHost: 'smtp.mail.me.com',
-    smtpPort: 587
-  })
+  console.log(`📧 Sending email to: ${to}`)
 
   try {
-    // Test the connection first
-    console.log('Testing SMTP connection...')
-    const testConnection = await transporter.verify()
-    console.log('SMTP connection test result:', testConnection)
+    // Verify SMTP connection
+    await transporter.verify()
+    console.log('✓ SMTP connection verified')
 
-    // Send email with proper "From" header formatting
-    console.log('Attempting to send email...')
+    // Send email
     const info = await transporter.sendMail({
       from: {
         name: 'Estate Sanctuary',
-        address: process.env.EMAIL_USER // Your custom domain email
+        address: process.env.EMAIL_USER
       },
       to,
       subject,
@@ -55,28 +40,12 @@ export async function sendEmail(to: string, subject: string, html: string) {
       }
     })
     
-    console.log('Email sent successfully!')
-    console.log('Message details:', {
-      messageId: info.messageId,
-      response: info.response,
-      accepted: info.accepted,
-      rejected: info.rejected,
-      envelope: info.envelope
-    })
-    console.log('=== Email Send Process Completed ===\n')
+    console.log(`✓ Email sent successfully (ID: ${info.messageId})`)
     return true
   } catch (error) {
-    console.error('\n=== Error in Email Send Process ===')
-    console.error('Authentication error details:', {
+    console.error('✗ Failed to send email:', {
       error: error instanceof Error ? error.message : 'Unknown error',
-      name: error instanceof Error ? error.name : 'Unknown error type',
-      stack: error instanceof Error ? error.stack : undefined,
-      config: {
-        host: 'smtp.mail.me.com',
-        port: 587,
-        user: process.env.EMAIL_USER,
-        secure: false
-      }
+      recipient: to
     })
     return false
   }
