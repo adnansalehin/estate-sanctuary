@@ -5,8 +5,6 @@ const AgentEmailSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,
-    lowercase: true,
   },
   signupDate: {
     type: Date,
@@ -14,11 +12,12 @@ const AgentEmailSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['active', 'unsubscribed'],
+    enum: ['active', 'inactive'],
     default: 'active',
-  }
+  },
 });
 
-const AgentEmail = mongoose.models.AgentEmail || mongoose.model('AgentEmail', AgentEmailSchema);
+const AgentEmail = mongoose.models.AgentEmail || 
+  mongoose.model('AgentEmail', AgentEmailSchema);
 
 export default AgentEmail; 
