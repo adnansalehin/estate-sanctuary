@@ -12,14 +12,14 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (isDarkTheme) {
-      root.classList.add('dark');
-    } else {
+    root.classList.add('dark');
+    
+    if (!isDarkTheme) {
       root.classList.remove('dark');
     }
   }, [isDarkTheme]);

@@ -25,7 +25,7 @@ export function OverviewClient({ propertyDetails, stages, initialActivities, doc
   }
 
   return (
-    <div className={`min-h-screen ${isDarkTheme ? 'bg-[#024e52] text-white' : 'bg-white text-[#024e52]'}`}>
+    <div className={`min-h-screen transition-all duration-500 ${isDarkTheme ? 'bg-[#024e52] text-white' : 'bg-white text-[#024e52]'}`}>
       <div className="container mx-auto p-4 space-y-6">
         <header className="flex justify-between items-center">
           <div>
