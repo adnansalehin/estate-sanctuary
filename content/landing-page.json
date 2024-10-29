@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "title": "Simplify Managing Your Client's Property Purchase Journey",
+    "subtitle": "Track every step of a property purchase process in one place. From offer to completion, stay informed and in control."
+  },
+  "emailForm": {
+    "placeholder": "Enter your email",
+    "button": {
+      "default": "Get Notified",
+      "submitting": "Subscribing..."
+    }
+  },
+  "features": [
+    {
+      "id": 1,
+      "title": "Real-time Progress Tracking",
+      "description": "Monitor your property purchase progress in real-time with our intuitive dashboard.",
+      "icon": "📊"
+    },
+    {
+      "id": 2,
+      "title": "Document Management",
+      "description": "Keep all your property-related documents organized and easily accessible.",
+      "icon": "📄"
+    },
+    {
+      "id": 3,
+      "title": "Communication Hub",
+      "description": "Streamline communication between all parties involved in the purchase process.",
+      "icon": "💬"
+    }
+  ]
+} 

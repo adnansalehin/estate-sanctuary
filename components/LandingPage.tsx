@@ -7,6 +7,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { subscribeEmail } from '@/app/actions/email'
 import { toast } from 'sonner'
+import content from '@/content/landing-page.json'
 
 export function LandingPage() {
   const { isDarkTheme } = useTheme()
@@ -42,18 +43,17 @@ export function LandingPage() {
       <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            Simplify Your Property Purchase Journey
+            {content.hero.title}
           </h1>
           <p className="mt-6 text-lg leading-8 opacity-80">
-            Track every step of your property purchase process in one place. 
-            From offer to completion, stay informed and in control.
+            {content.hero.subtitle}
           </p>
           <div className="mt-10">
             <form onSubmit={handleSubmit} className="max-w-md mx-auto">
               <div className="flex gap-x-4">
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder={content.emailForm.placeholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={cn(
@@ -74,13 +74,13 @@ export function LandingPage() {
                   )}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Subscribing...' : 'Get Notified'}
+                  {isSubmitting ? content.emailForm.button.submitting : content.emailForm.button.default}
                 </Button>
               </div>
             </form>
           </div>
           <div className="mt-16 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
+            {content.features.map((feature) => (
               <div 
                 key={feature.id}
                 className={cn(
@@ -101,24 +101,3 @@ export function LandingPage() {
     </div>
   )
 }
-
-const features = [
-  {
-    id: 1,
-    title: 'Real-time Progress Tracking',
-    description: 'Monitor your property purchase progress in real-time with our intuitive dashboard.',
-    icon: '📊'
-  },
-  {
-    id: 2,
-    title: 'Document Management',
-    description: 'Keep all your property-related documents organized and easily accessible.',
-    icon: '📄'
-  },
-  {
-    id: 3,
-    title: 'Communication Hub',
-    description: 'Streamline communication between all parties involved in the purchase process.',
-    icon: '💬'
-  }
-]
