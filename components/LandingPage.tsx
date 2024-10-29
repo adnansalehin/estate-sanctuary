@@ -5,21 +5,38 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
+import { subscribeEmail } from '@/app/actions/email'
+import { toast } from 'sonner'
 
 export function LandingPage() {
   const { isDarkTheme } = useTheme()
   const [email, setEmail] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle email submission
-    console.log('Email submitted:', email)
-    setEmail('')
+    setIsSubmitting(true)
+    
+    try {
+      const result = await subscribeEmail(email)
+      
+      if (result.success) {
+        toast.success(result.message)
+        setEmail('')
+      } else {
+        toast.error(result.message)
+      }
+    } catch (error) {
+      toast.error('An unexpected error occurred')
+      console.error('Subscription error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <div className={cn(
-      'min-h-screen pt-24 transition-colors duration-300', // Increased pt-24 for better spacing
+      'min-h-screen pt-24 transition-colors duration-300',
       isDarkTheme ? 'bg-[#024e52] text-white' : 'bg-gray-50 text-[#024e52]'
     )}>
       <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
@@ -41,8 +58,10 @@ export function LandingPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   className={cn(
                     'flex-1',
-                    isDarkTheme ? 'bg-[#013639] text-white' : 'bg-white'
+                    isDarkTheme ? 'bg-[#013639] text-white' : 'bg-white',
+                    isSubmitting && 'opacity-50'
                   )}
+                  disabled={isSubmitting}
                   required
                 />
                 <Button 
@@ -50,10 +69,12 @@ export function LandingPage() {
                   className={cn(
                     isDarkTheme 
                       ? 'bg-white text-[#024e52] hover:bg-gray-100' 
-                      : 'bg-[#024e52] text-white hover:bg-[#013639]'
+                      : 'bg-[#024e52] text-white hover:bg-[#013639]',
+                    isSubmitting && 'opacity-50'
                   )}
+                  disabled={isSubmitting}
                 >
-                  Get Notified
+                  {isSubmitting ? 'Subscribing...' : 'Get Notified'}
                 </Button>
               </div>
             </form>
