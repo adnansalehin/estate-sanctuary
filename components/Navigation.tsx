@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useTheme } from '@/contexts/ThemeContext'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { cn } from '@/lib/utils'
@@ -9,12 +9,19 @@ import { cn } from '@/lib/utils'
 // Define navigation items with unique IDs
 const navItems = [
   { id: 'home', path: '/', label: 'Home' },
-  { id: 'demo', path: '/demo', label: 'Demo' }
+  { id: 'demo', path: '/demo', label: 'Demo' },
+  { id: 'pricing', path: '/pricing', label: 'Pricing' }
 ]
 
 export function Navigation() {
   const pathname = usePathname()
+  const router = useRouter()
   const { isDarkTheme } = useTheme()
+
+  const handleNavigation = (path: string) => {
+    if (path === pathname) return
+    router.push(path)
+  }
 
   return (
     <nav className={cn(
@@ -30,9 +37,9 @@ export function Navigation() {
           </Link>
           <div className="flex items-center space-x-4">
             {navItems.map(item => (
-              <Link 
+              <button
                 key={item.id}
-                href={item.path} 
+                onClick={() => handleNavigation(item.path)}
                 className={cn(
                   'px-3 py-2 rounded-md text-sm font-medium',
                   pathname === item.path ? (
@@ -41,7 +48,7 @@ export function Navigation() {
                 )}
               >
                 {item.label}
-              </Link>
+              </button>
             ))}
           </div>
         </div>

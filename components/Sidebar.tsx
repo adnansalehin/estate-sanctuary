@@ -19,7 +19,7 @@ export function Sidebar({ properties, selectedProperty, onPropertySelect, isDark
   return (
     <div
       className={cn(
-        'h-screen fixed left-0 top-0 pt-14 z-40 transition-all duration-300', // Added pt-14 for navigation bar height
+        'h-screen fixed left-0 top-0 pt-14 z-40 transition-all duration-300',
         isDarkTheme ? 'bg-[#013639] text-white' : 'bg-white text-[#024e52]',
         isCollapsed ? 'w-16' : 'w-64'
       )}
@@ -27,7 +27,12 @@ export function Sidebar({ properties, selectedProperty, onPropertySelect, isDark
       <Button
         variant="ghost"
         size="icon"
-        className="absolute -right-4 top-16 rounded-full bg-white shadow-md" // Adjusted top position
+        className={cn(
+          "absolute -right-4 top-16 rounded-full shadow-md",
+          isDarkTheme 
+            ? "bg-[#024e52] text-white hover:bg-[#035d62]" 
+            : "bg-white text-[#024e52] hover:bg-gray-100"
+        )}
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         {isCollapsed ? (

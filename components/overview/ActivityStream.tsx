@@ -7,7 +7,7 @@ import { FileText, Users, Calendar } from 'lucide-react'
 import { DocumentUpload } from "@/components/overview/DocumentUpload"
 import { ThreadList } from "@/components/overview/ThreadList"
 import { Activity, ActivityStreamProps, ActivityListProps } from '@/app/types'
-
+import { cn } from '@/lib/utils'
 
 export function ActivityStream({ initialActivities, currentStage, isDarkTheme, initialConversations }: ActivityStreamProps) {
   const [activities] = useState<Activity[]>(initialActivities);
@@ -20,8 +20,13 @@ export function ActivityStream({ initialActivities, currentStage, isDarkTheme, i
         <CardTitle>Activity Stream</CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="all" className="w-full" >
-          <TabsList className={`grid w-full grid-cols-4 ${isDarkTheme ? "bg-[#273b3c] text-white" : "bg-gray-100 text-[#024e52]"}`}>
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className={cn(
+            "grid w-full grid-cols-4",
+            isDarkTheme 
+              ? "bg-[#024e52]/50" 
+              : "bg-gray-100"
+          )}>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
             <TabsTrigger value="enquiries">Enquiries</TabsTrigger>
