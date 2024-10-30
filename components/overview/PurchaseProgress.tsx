@@ -29,6 +29,7 @@ export function PurchaseProgress({ stages, currentStage=1, onStageClick, isDarkT
         <Progress 
           value={progress} 
           className={`h-2 mb-4 ${isDarkTheme ? 'bg-[#024e52]' : 'bg-gray-200'}`}
+          indicatorClassName={isDarkTheme ? 'bg-white' : 'bg-[#024e52]'}
         />
         <div className="flex justify-between text-sm">
           {stages.map((stage, index) => (
