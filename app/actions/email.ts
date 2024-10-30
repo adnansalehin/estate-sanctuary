@@ -73,7 +73,10 @@ export async function subscribeEmail(email: string) {
     const pendingVerification = await new PendingEmailVerification({ email: validatedEmail }).save()
     console.log('✓ Verification token created')
     
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${pendingVerification.verificationToken}`
+    // Ensure the URL is properly constructed
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '')
+    const verificationUrl = `${baseUrl}/verify-email?token=${encodeURIComponent(pendingVerification.verificationToken)}`
+    
     const emailSent = await sendEmail(
       validatedEmail,
       'Verify your email address',

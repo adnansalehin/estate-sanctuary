@@ -24,7 +24,7 @@ export async function sendEmail(to: string, subject: string, html: string) {
     await transporter.verify()
     console.log('✓ SMTP connection verified')
 
-    // Send email
+    // Send email with additional headers to prevent URL modification
     const info = await transporter.sendMail({
       from: {
         name: 'Estate Sanctuary',
@@ -36,8 +36,12 @@ export async function sendEmail(to: string, subject: string, html: string) {
       headers: {
         'X-Priority': '1',
         'X-MSMail-Priority': 'High',
-        'Importance': 'high'
-      }
+        'Importance': 'high',
+        'Content-Type': 'text/html; charset=UTF-8',
+        'X-Content-Type-Options': 'nosniff'
+      },
+      textEncoding: 'base64',
+      encoding: 'quoted-printable'
     })
     
     console.log(`✓ Email sent successfully (ID: ${info.messageId})`)

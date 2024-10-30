@@ -34,10 +34,16 @@ export const generateWelcomeEmail = (verificationUrl: string) => `
       margin: 20px 0;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+    .verification-link {
+      word-break: break-all;
+      color: #024e52;
+      margin-top: 15px;
+      font-size: 14px;
+    }
     .button {
       display: inline-block;
       background-color: #024e52;
-      color: #ffffff;
+      color: #ffffff !important;
       padding: 12px 24px;
       border-radius: 6px;
       text-decoration: none;
@@ -62,10 +68,12 @@ export const generateWelcomeEmail = (verificationUrl: string) => `
     </div>
     <div class="content">
       <h1>Welcome to Estate Sanctuary!</h1>
-      <p>Thank you for your interest in staying updated with our property management platform. To complete your subscription and start receiving notifications, please verify your email address.</p>
+      <p>Thank you for your interest in staying updated with our property management platform. To start receiving notifications, please verify your email address.</p>
       <div style="text-align: center;">
         <a href="${verificationUrl}" class="button">Verify Email Address</a>
       </div>
+      <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+      <p class="verification-link">${verificationUrl}</p>
       <p>This verification link will expire in 24 hours. If you didn't request this verification, please ignore this email.</p>
     </div>
     <div class="footer">
