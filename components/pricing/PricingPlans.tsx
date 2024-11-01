@@ -1,54 +1,12 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Check } from 'lucide-react'
+import { Check, Loader2 } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
-
-const plans = [
-  {
-    name: 'Free',
-    price: '£0',
-    description: 'Perfect for getting started',
-    features: [
-      'Up to 5 properties',
-      'Basic activity tracking',
-      'Document storage',
-      'Email support'
-    ],
-    cta: 'Get Started'
-  },
-  {
-    name: 'Pro',
-    price: '£100',
-    period: '/month',
-    description: 'Best for growing agencies',
-    features: [
-      'Unlimited properties',
-      'Advanced analytics',
-      'Priority support',
-      'Custom branding',
-      'Team collaboration',
-      'API access'
-    ],
-    cta: 'Start Pro Trial'
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    description: 'For large organizations',
-    features: [
-      'Everything in Pro',
-      'Dedicated account manager',
-      'Custom integrations',
-      'SLA guarantee',
-      'Advanced security',
-      'Bulk operations',
-      'Training sessions'
-    ],
-    cta: 'Contact Sales'
-  }
-]
+import { useStripeCheckout } from '@/hooks/useStripeCheckout'
+import { STRIPE_PRICE_IDS } from '@/lib/stripe'
+import pricingContent from '@/content/pricing.json'
 
 type PricingPlansProps = {
   onEnterpriseClick: () => void
@@ -56,10 +14,22 @@ type PricingPlansProps = {
 
 export function PricingPlans({ onEnterpriseClick }: PricingPlansProps) {
   const { isDarkTheme } = useTheme()
+  const { handleCheckout, isLoading } = useStripeCheckout()
+
+  const handlePlanSelection = async (planName: string) => {
+    if (planName === 'Enterprise') {
+      onEnterpriseClick()
+      return
+    }
+
+    if (planName === 'Pro') {
+      await handleCheckout(STRIPE_PRICE_IDS.PRO)
+    }
+  }
 
   return (
     <div className="grid md:grid-cols-3 gap-8">
-      {plans.map((plan) => (
+      {pricingContent.plans.map((plan) => (
         <div
           key={plan.name}
           className={cn(
@@ -83,7 +53,8 @@ export function PricingPlans({ onEnterpriseClick }: PricingPlansProps) {
             ))}
           </ul>
           <Button
-            onClick={plan.name === 'Enterprise' ? onEnterpriseClick : undefined}
+            onClick={() => handlePlanSelection(plan.name)}
+            disabled={isLoading}
             className={cn(
               'w-full',
               isDarkTheme
@@ -91,7 +62,14 @@ export function PricingPlans({ onEnterpriseClick }: PricingPlansProps) {
                 : 'bg-[#024e52] text-white hover:bg-[#013639]'
             )}
           >
-            {plan.cta}
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              plan.cta
+            )}
           </Button>
         </div>
       ))}

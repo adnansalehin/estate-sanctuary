@@ -1,0 +1,46 @@
+{
+  "plans": [
+    {
+      "name": "Free",
+      "price": "£0",
+      "description": "Perfect for getting started",
+      "features": [
+        "Up to 5 properties",
+        "Basic activity tracking",
+        "Document storage",
+        "Email support"
+      ],
+      "cta": "Get Started"
+    },
+    {
+      "name": "Pro",
+      "price": "£100",
+      "period": "/month",
+      "description": "Best for growing agencies",
+      "features": [
+        "Unlimited properties",
+        "Advanced analytics",
+        "Priority support",
+        "Custom branding",
+        "Team collaboration",
+        "API access"
+      ],
+      "cta": "Start Pro Trial"
+    },
+    {
+      "name": "Enterprise",
+      "price": "Custom",
+      "description": "For large organizations",
+      "features": [
+        "Everything in Pro",
+        "Dedicated account manager",
+        "Custom integrations",
+        "SLA guarantee",
+        "Advanced security",
+        "Bulk operations",
+        "Training sessions"
+      ],
+      "cta": "Contact Sales"
+    }
+  ]
+} 
